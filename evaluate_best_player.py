@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 # パラメータの準備
-EP_GAME_COUNT = 10  # 1評価あたりのゲーム数
+EP_GAME_COUNT = 10  # 1評価あたりのゲーム数(増やす？)
 
 # 先手プレイヤーのポイント
 def first_player_point(ended_state):
