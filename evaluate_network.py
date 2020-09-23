@@ -1,5 +1,5 @@
 # ====================
-# 新パラメータ評価部
+# 新パラメータ評価
 # ====================
 
 # パッケージのインポート
@@ -47,6 +47,14 @@ def play(next_actions):
 
 # ベストプレイヤーの交代
 def update_best_player():
+    # 日時でファイルを命名
+    filename = "./buckup/log_" + datetime.datetime.now().strftime("%Y%m%d_%H%M") + ".h5"
+    # ファイル作成
+    f = open(filename, "w")
+    # モデルデータのバックアップ
+    copy("./model/latest.h5", filename)
+
+    # ベストプレイヤーの交代
     copy("./model/latest.h5", "./model/best.h5")
     print("Change BestPlayer")
 
