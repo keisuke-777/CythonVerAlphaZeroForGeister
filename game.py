@@ -56,14 +56,14 @@ class State:
     # 負けかどうか
     def is_lose(self):
         if not any(elem == 1 for elem in self.pieces):  # 自分の青駒が存在しないなら負け
-            print("青喰い")
+            # print("青喰い")
             return True
         if not any(elem == 2 for elem in self.enemy_pieces):  # 敵の赤駒が存在しない(全部取っちゃった)なら負け
-            print("赤喰い")
+            # print("赤喰い")
             return True
         # 前の手でゴールされてたらis_goalがTrueになってる(ような仕様にする)
         if self.is_goal:
-            print("ゴール")
+            # print("ゴール")
             return True
         return False
 
@@ -349,6 +349,7 @@ if __name__ == "__main__":
         # ゲーム終了時
         if state.is_done():
             print(state.depth)
+
             if state.is_lose():
                 if state.depth % 2 == 0:
                     print("敗北")
