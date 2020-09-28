@@ -13,6 +13,7 @@ import pickle
 
 # パラメータの準備
 RN_EPOCHS = 100  # 学習回数
+BATCH_SIZE = 128  # バッチの大きさ
 
 # 学習データの読み込み
 def load_data():
@@ -62,7 +63,7 @@ def train_network():
     model.fit(
         xs,
         [y_policies, y_values],
-        batch_size=128,
+        batch_size=BATCH_SIZE,
         epochs=RN_EPOCHS,
         verbose=0,
         callbacks=[lr_decay, print_callback],
