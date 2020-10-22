@@ -10,6 +10,7 @@ from tensorflow.keras import backend as K
 from pathlib import Path
 from shutil import copy
 import numpy as np
+import datetime
 
 # パラメータの準備
 EN_GAME_COUNT = 10  # 1評価あたりのゲーム数
