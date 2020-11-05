@@ -3,7 +3,7 @@
 # ====================
 
 # パッケージのインポート
-from game import State, random_action, human_player_action
+from game import State, random_action, human_player_action, GetPVAndRandomAction
 from pv_mcts import pv_mcts_action
 from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
@@ -76,18 +76,23 @@ def evaluate_best_player():
     # evaluate_algorithm_of("VS_Random", next_actions)
 
     # 過去のモデルの読み込み
-    first_model = load_model("./model/first_best.h5")
+    # first_model = load_model("./model/first_best.h5")
 
     # PV MCTSで行動選択を行う関数の生成
-    first_next_pv_mcts_action = pv_mcts_action(first_model, 0.0)
+    # first_next_pv_mcts_action = pv_mcts_action(first_model, 0.0)
 
     # VSランダム
     # next_actions = (first_next_pv_mcts_action, random_action)
     # evaluate_algorithm_of("first_VS_Random", next_actions)
 
+    # VSランダム(ポリシーとバリューを撒き散らす)
+    next_GetPVAndRandomAction = GetPVAndRandomAction(model)
+    next_actions = (next_pv_mcts_action, next_GetPVAndRandomAction)
+    evaluate_algorithm_of("first_VS_Random(print)", next_actions)
+
     # 人類との戦い human_player_action
-    next_actions = (human_player_action, next_pv_mcts_action)
-    evaluate_algorithm_of("自己対戦", next_actions)
+    # next_actions = (human_player_action, next_pv_mcts_action)
+    # evaluate_algorithm_of("自己対戦", next_actions)
 
     # 自己対戦
     # next_actions = (next_pv_mcts_action, first_next_pv_mcts_action)

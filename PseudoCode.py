@@ -30,12 +30,17 @@ def banmenSuitei():
         for MyPatternList in m:
             # ニューラルネットを使って価値を算出
             EnNuraruValue += nuraruValue
-            # MyPattern[i] += MyPattern[i] * gamma + nuraruValue
+            # ここ全部足すのではなく、相手の読みも想定して重みづけする？？
+            # (ここの処理で相手の行動から、相手の信じるこっちの盤面もおんなじ流れで足しとく？？)
+            MyPattern[i] += MyPattern[i] * gamma + nuraruValue
         # 相手の盤面推定値を更新
         EnPattern[i] += EnPattern[i] * gamma + EnNuraruValue
 
     pass
     return null
+
+
+# 実際に敵駒を食ってみて、ありえなかった駒配置を削除
 
 
 # 盤面推定値を使って行動決定

@@ -226,7 +226,21 @@ def random_action(state):
     return legal_actions[random.randint(0, len(legal_actions) - 1)]
 
 
-######## ここまで見た ########
+from pv_mcts import predict
+
+# ポリシーとバリューを撒き散らしながらランダム行動(テスト用関数)
+def GetPVAndRandomAction(model):
+    def print_PandV(state):
+        print(state)
+        legal_actions = state.legal_actions()
+        print(legal_actions)
+        policies, value = predict(model, state)
+        print(policies)
+        print(value)
+        return legal_actions[random.randint(0, len(legal_actions) - 1)]
+
+    return print_PandV
+
 
 # 人間に行動を選択させる
 def human_player_action(state):
