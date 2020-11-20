@@ -14,6 +14,7 @@ from dual_network import DN_INPUT_SHAPE
 from pathlib import Path
 from tensorflow.keras.models import load_model
 
+gamma = 0.9
 
 # おそらく不完全情報ガイスター(のstateのみ？)を定義してそれを更新して管理した方がよさげ
 # 不完全情報ガイスターの盤面情報及びそれらの推測値
@@ -273,6 +274,7 @@ def create_state(ii_state, my_blue, my_red, enemy_blue, enemy_red):
     return [pieces_array_of(my_blue, my_red), pieces_array_of(enemy_blue, enemy_red)]
 
 
+# 未修正(enemy_legal_actionsを使うようにしなければならないcreate_state周りも修正必要？)
 # 返す値をどう使うかは他の関数に委ねる
 # my→自分。推測のために70パターン想定するが、足し合わせるだけ(各盤面について保存はしない)
 # enemy→推測したい駒配置。各駒の推測値を保存
@@ -334,15 +336,17 @@ def II_predict(model, ii_state):
     return policies_list
 
 
-# 相手の動きから推測値を更新
-# 行動番号のインデックス,iipredictで取得した、パターンと行動ごと推測値
-def update_estimated_num(action_number_index, ii_predict_array, ii_state, gamma):
-    # II_predictの値に基づき更新。それ以前の値にはガンマで重みづけ
-    for index, predict_num in enumerate(ii_predict_array):
-        ii_state.enemy_estimated_num[index][0] = (
-            predict_num[action_number_index]
-            + ii_state.enemy_estimated_num[index][0] * gamma
-        )
+# 相手の行動から推測値を更新
+# state, II_predictで作成した推測値の行列, 敵の行動番号
+def update_predict_num_all(ii_state, beforehand_estimated_num, enemy_action_num):
+    enemy_legal_actions = list(ii_state.enemy_legal_actions())
+    enemy_action_index = enemy_legal_actions.index(enemy_action_num)
+
+    for index, enemy_estimated_num in enumerate(ii_state.enemy_estimated_num):
+        # ii_state.enemy_estimated_num[index][0]
+        enemy_estimated_num[0] = (
+            enemy_estimated_num[0] * gamma
+        ) + beforehand_estimated_num[index][enemy_action_index]
 
 
 # 駒の死亡処理
@@ -389,11 +393,6 @@ def reduce_pattern(dead_piece_ID, color_is_blue: bool, ii_state):
         ii_state.living_piece_color[3] -= 1
     else:
         print("ERROR:reduce_pattern(living_piece_colorから削除)")
-
-
-# 相手の行動から推測値を更新
-def update_predict_num_all(ii_state, beforehand_estimated_num, enemy_action_num):
-    legal_actions = list(ii_state.legal_actions())
 
 
 # 相手の推測値を使って無難な手を選択
@@ -474,8 +473,8 @@ if __name__ == "__main__":
     beforehand_estimated_num = II_predict(model, ii_state)
 
     # 実際に取られた行動を取得
-    print("相手の行動を取得中")
-    enemy_action_num = 0  # 仮置き
+    print("相手の行動番号を取得中")
+    enemy_action_num = 0  # 仮置きの行動番号
 
     # 実際に取られた行動から推測値を更新
     print("推測値を更新中")
