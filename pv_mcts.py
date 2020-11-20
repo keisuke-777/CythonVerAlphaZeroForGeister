@@ -20,12 +20,17 @@ def predict(model, state):
     x = np.array(state.pieces_array())
     x = x.reshape(c, a, b).transpose(1, 2, 0).reshape(1, a, b, c)
 
+    print("x:")
+    print(x)
+
     # 推論
     y = model.predict(x, batch_size=1)
 
     # 方策の取得
     policies = y[0][0][list(state.legal_actions())]  # 合法手のみ
     policies /= sum(policies) if sum(policies) else 1  # 合計1の確率分布に変換
+
+    print(policies)
 
     # 価値の取得
     value = y[1][0][0]
