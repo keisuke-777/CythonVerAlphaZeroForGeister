@@ -89,7 +89,7 @@ class II_State:
         else:
             self.my_piece_list = my_piece_list
 
-        # real_my_piece_blue_setは必須
+        # real_my_piece_blue_setは自分の青駒のIDのセット(引数必須)
         self.real_my_piece_blue_set = real_my_piece_blue_set
         self.real_my_piece_red_set = (
             set(self.my_piece_list) - self.real_my_piece_blue_set
@@ -155,6 +155,10 @@ class II_State:
             if position == 5:
                 actions.extend([22])  # 5*4 + 2
         return actions
+
+    # 相手目線の合法手のリストを返す(未実装)
+    def enemy_legal_actions(self):
+        pass
 
     # 駒の移動元と移動方向を行動に変換
     def position_to_action(self, position, direction):
@@ -388,8 +392,8 @@ def reduce_pattern(dead_piece_ID, color_is_blue: bool, ii_state):
 
 
 # 相手の行動から推測値を更新
-def update_predict_num_all(ii_state):
-    pass
+def update_predict_num_all(ii_state, beforehand_estimated_num, enemy_action_num):
+    legal_actions = list(ii_state.legal_actions())
 
 
 # 相手の推測値を使って無難な手を選択
@@ -461,8 +465,27 @@ def teleport(ii_state, before, now):
 
 # 動作確認
 if __name__ == "__main__":
+    path = sorted(Path("./model").glob("*.h5"))[-1]
+    model = load_model(str(path))
     ii_state = II_State({8, 9, 10, 11})
 
+    # 相手の盤面から全ての行動の推測値を計算しておく
+    print("推測値を算出中")
+    beforehand_estimated_num = II_predict(model, ii_state)
+
+    # 実際に取られた行動を取得
+    print("相手の行動を取得中")
+    enemy_action_num = 0  # 仮置き
+
+    # 実際に取られた行動から推測値を更新
+    print("推測値を更新中")
+    update_predict_num_all(ii_state, beforehand_estimated_num, enemy_action_num)
+
+    # 行動を決定
+    print("行動を決定中")
+    action_num = action_decision(model, ii_state)
+
+    # デバッグ用
     a = enemy_coordinate_checker(
         "14R24R34R44R15B25B35B45B41u31u21u11u40u30u20u10u",
         "14R24R34R44R15B25B35B45B41u32u21u11u40u30u20u10u",
@@ -479,8 +502,6 @@ if __name__ == "__main__":
     print(update_II_state(ii_state, b[0], b[1]))
     # print(find_move_number_from_coordinate(a[0], a[1]))
     # state = State()
-    path = sorted(Path("./model").glob("*.h5"))[-1]
-    model = load_model(str(path))
 
     print(action_decision(model, ii_state))
     # print(ii_state.enemy_estimated_num)
@@ -488,7 +509,7 @@ if __name__ == "__main__":
     # print(ii_state.enemy_estimated_num)
 
     start = time.time()
-    print(II_predict(model, ii_state))
+    print()
     elapsed_time = time.time() - start
     print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
