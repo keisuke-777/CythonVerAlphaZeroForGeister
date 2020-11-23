@@ -299,4 +299,5 @@ if __name__ == "__main__":
             state = state.next(just_before_action_num)
 
         # 文字列表示
+        print("depth", state.depth)
         print(state)
