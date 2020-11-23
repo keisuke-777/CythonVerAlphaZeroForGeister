@@ -278,7 +278,7 @@ def mcts_action(state):
             # ゲーム終了時
             if self.state.is_done():
                 # 勝敗結果で価値を取得
-                value = -1 if self.state.is_lose() else 0  # 負けは-1、引き分けは0
+                value = -1  # 負けも引き分けも-1(要調整)
 
                 # 累計価値と試行回数の更新
                 self.w += value
