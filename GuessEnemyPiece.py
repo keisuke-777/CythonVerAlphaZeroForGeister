@@ -243,7 +243,7 @@ class II_State:
             dead_piece_ID = np.where(self.all_piece == coordinate_after)[0][0]
             color_is_blue = np.any(self.real_my_piece_blue_set == dead_piece_ID)
             print("(next)dead_piece_ID:", dead_piece_ID)
-            reduce_pattern(dead_piece_ID, color_is_blue, ii_state)
+            reduce_pattern(dead_piece_ID, color_is_blue, self)
             self.all_piece[np.where(self.all_piece == coordinate_after)[0][0]] = 99
         self.all_piece[move_piece_index] = coordinate_after  # 駒の移動
 
@@ -721,6 +721,8 @@ if __name__ == "__main__":
     path = sorted(Path("./model").glob("*.h5"))[-1]
     model = load_model(str(path))
     ii_state = II_State({8, 9, 10, 11})
+
+    reduce_pattern(4, True, ii_state)
 
     # guess_enemy_piece_player(
     #     model,
