@@ -78,8 +78,6 @@ class II_State:
         else:
             self.all_piece = all_piece
 
-            self.my_piece_list = my_piece_list
-
         if enemy_piece_list == None:
             self.enemy_piece_list = [0, 1, 2, 3, 4, 5, 6, 7]
         else:
@@ -177,7 +175,7 @@ class II_State:
         for position in piece_coordinate_array:
             # 88以上は行動できないので省く(0~35)
             if position < 36:
-                actions.extend(self.legal_actions_pos(position, self.my_piece_list))
+                actions.extend(self.legal_actions_pos(position, self.enemy_piece_list))
             # 0と5はゴールの選択肢を追加(赤駒でも問答無用)
             if position == 0:
                 actions.extend([2])  # 0*4 + 2
