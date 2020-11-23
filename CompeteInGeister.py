@@ -52,14 +52,14 @@ class State:
     # 負けかどうか
     def is_lose(self):
         if not any(elem == 1 for elem in self.pieces):  # 自分の青駒が存在しないなら負け
-            # print("青喰い")
+            print("青喰い")
             return True
         if not any(elem == 2 for elem in self.enemy_pieces):  # 敵の赤駒が存在しない(全部取っちゃった)なら負け
-            # print("赤喰い")
+            print("赤喰い")
             return True
         # 前の手でゴールされてたらis_goalがTrueになってる(ような仕様にする)
         if self.is_goal:
-            # print("ゴール")
+            print("ゴール")
             return True
         return False
 
@@ -285,18 +285,21 @@ if __name__ == "__main__":
 
         # 次の状態の取得
         if state.depth % 2 == 1:
-            just_before_enemy_action_num = just_before_action_num
-            guess_player_action = GuessEnemyPiece.guess_enemy_piece_player_for_debug(
-                model, ii_state, just_before_enemy_action_num
-            )
-            just_before_action_num = guess_player_action
-            print("自作AIの行動番号", just_before_action_num)
+            # just_before_enemy_action_num = just_before_action_num
+            # guess_player_action = GuessEnemyPiece.guess_enemy_piece_player_for_debug(
+            #     model, ii_state, just_before_enemy_action_num
+            # )
+            # just_before_action_num = guess_player_action
+            # print("自作AIの行動番号", just_before_action_num)
+            # state = state.next(just_before_action_num)
+            just_before_action_num = random_action(state)
+            print("敵の行動番号", just_before_action_num)
             state = state.next(just_before_action_num)
         else:
             just_before_action_num = random_action(state)
-            print("ランダムAIの行動番号", just_before_action_num)
+            print("自分の行動番号", just_before_action_num)
             state = state.next(just_before_action_num)
 
         # 文字列表示
-        print("depth", state.depth)
+        # print("depth", state.depth)
         print(state)

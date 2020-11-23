@@ -96,7 +96,7 @@ def evaluate_network():
     del model1
 
     # ベストプレイヤーの交代
-    if average_point >= 0.5:
+    if average_point >= 0.4:
         update_best_player()
         return True
     else:

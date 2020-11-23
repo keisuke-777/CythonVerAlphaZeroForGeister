@@ -717,7 +717,7 @@ if __name__ == "__main__":
     model = load_model(str(path))
     ii_state = II_State({8, 9, 10, 11})
 
-    reduce_pattern(4, True, ii_state)
+    # reduce_pattern(4, True, ii_state)
 
     # guess_enemy_piece_player(
     #     model,
