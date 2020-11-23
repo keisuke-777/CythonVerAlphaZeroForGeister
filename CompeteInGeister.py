@@ -269,7 +269,7 @@ if __name__ == "__main__":
     while True:
         # ゲーム終了時
         if state.is_done():
-            print(state.depth)
+            print("ゲーム終了:ターン数", state.depth)
 
             if state.is_lose():
                 if state.depth % 2 == 0:
@@ -294,7 +294,6 @@ if __name__ == "__main__":
             state = state.next(just_before_action_num)
         else:
             just_before_action_num = random_action(state)
-            print(state.legal_actions())
             print("ランダムAIの行動番号", just_before_action_num)
             state = state.next(just_before_action_num)
 

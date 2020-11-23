@@ -244,7 +244,6 @@ class II_State:
             color_is_blue = np.any(self.real_my_piece_blue_set == dead_piece_ID)
             print("(next)dead_piece_ID:", dead_piece_ID)
             reduce_pattern(dead_piece_ID, color_is_blue, self)
-            self.all_piece[np.where(self.all_piece == coordinate_after)[0][0]] = 99
         self.all_piece[move_piece_index] = coordinate_after  # 駒の移動
 
     # ボードの文字列表示
@@ -677,11 +676,7 @@ def guess_enemy_piece_player(model, ii_state, before_tcp_str, now_tcp_str):
 def guess_enemy_piece_player_for_debug(model, ii_state, just_before_enemy_action_num):
     # 相手の盤面から全ての行動の推測値を計算しておく
     print("推測値を算出中")
-    print("推測前my:", np.sort(ii_state.legal_actions()))
-    print("推測前enemy", np.sort(ii_state.enemy_legal_actions()))
     beforehand_estimated_num = enemy_ii_predict(model, ii_state)
-    print("推測後my", np.sort(ii_state.legal_actions()))
-    print("推測後enemy", np.sort(ii_state.enemy_legal_actions()))
 
     print("敵の行動番号", just_before_enemy_action_num, sep=":")
 
