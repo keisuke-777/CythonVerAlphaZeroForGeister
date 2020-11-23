@@ -145,18 +145,18 @@ class State:
 
         # 合法手がくると仮定
         # 駒の移動(後ろに動くことは少ないかな？ + if文そんなに踏ませたくないな と思ったので判定を左右下上の順番にしてるけど意味あるのかは不明)
-        if direction == 1:  # 左
-            position_aft = position_bef - 1
-        elif direction == 3:  # 右
-            position_aft = position_bef + 1
-        elif direction == 0:  # 下
+        if direction == 0:  # 下
             position_aft = position_bef + 6
+        elif direction == 1:  # 左
+            position_aft = position_bef - 1
         elif direction == 2:  # 上
             if position_bef == 0 or position_bef == 5:  # 0と5の上行動はゴール処理なので先に弾く
                 state.is_goal = True
                 position_aft = position_bef  # position_befを入れて駒の場所を動かさない(勝敗は決しているので下手に動かさない方が良いと考えた)
             else:
                 position_aft = position_bef - 6
+        elif direction == 3:  # 右
+            position_aft = position_bef + 1
         else:
             print("error関数名:next")
 
@@ -243,16 +243,27 @@ def human_player_action(state):
 
 
 import GuessEnemyPiece
-
-
-def guess_enemy_piece_player(state, ii_state):
-    pass
+import numpy as np
+import itertools
+import time
+from pv_mcts import predict
+from dual_network import DN_INPUT_SHAPE
+from pathlib import Path
+from tensorflow.keras.models import load_model
 
 
 # 動作確認
 if __name__ == "__main__":
     # 状態の生成
     state = State()
+
+    # GuessEnemyPieceに必要な処理
+    path = sorted(Path("./model").glob("*.h5"))[-1]
+    model = load_model(str(path))
+    ii_state = GuessEnemyPiece.II_State({8, 9, 10, 11})
+
+    # 直前の行動を保管
+    just_before_action_num = 0
 
     # ゲーム終了までのループ
     while True:
@@ -273,7 +284,19 @@ if __name__ == "__main__":
             break
 
         # 次の状態の取得
-        state = state.next(random_action(state))
+        if state.depth % 2 == 1:
+            just_before_enemy_action_num = just_before_action_num
+            guess_player_action = GuessEnemyPiece.guess_enemy_piece_player_for_debug(
+                model, ii_state, just_before_enemy_action_num
+            )
+            just_before_action_num = guess_player_action
+            print("自作AIの行動番号", just_before_action_num)
+            state = state.next(just_before_action_num)
+        else:
+            just_before_action_num = random_action(state)
+            print(state.legal_actions())
+            print("ランダムAIの行動番号", just_before_action_num)
+            state = state.next(just_before_action_num)
 
         # 文字列表示
-        # print(state)
+        print(state)
