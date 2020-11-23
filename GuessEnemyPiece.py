@@ -146,14 +146,18 @@ class II_State:
 
         print("my:self.all_piece", piece_coordinate_array)
 
-        for position in piece_coordinate_array:
+        for piece_coordinate in piece_coordinate_array:
             # 88以上は行動できないので省く(0~35)
-            if position < 36:
-                actions.extend(self.legal_actions_pos(position, self.my_piece_list))
+            if piece_coordinate < 36:
+                actions.extend(
+                    self.piece_coordinate_to_actions(
+                        piece_coordinate, piece_coordinate_array
+                    )
+                )
             # 0と5はゴールの選択肢を追加(赤駒でも問答無用)
-            if position == 0:
+            if piece_coordinate == 0:
                 actions.extend([2])  # 0*4 + 2
-            if position == 5:
+            if piece_coordinate == 5:
                 actions.extend([22])  # 5*4 + 2
         return actions
 
@@ -172,20 +176,40 @@ class II_State:
 
         print("enemy:self.all_piece", piece_coordinate_array)
 
-        for position in piece_coordinate_array:
+        for piece_coordinate in piece_coordinate_array:
             # 88以上は行動できないので省く(0~35)
-            if position < 36:
-                actions.extend(self.legal_actions_pos(position, self.enemy_piece_list))
+            if piece_coordinate < 36:
+                actions.extend(
+                    self.piece_coordinate_to_actions(
+                        piece_coordinate, piece_coordinate_array
+                    )
+                )
             # 0と5はゴールの選択肢を追加(赤駒でも問答無用)
-            if position == 0:
+            if piece_coordinate == 0:
                 actions.extend([2])  # 0*4 + 2
-            if position == 5:
+            if piece_coordinate == 5:
                 actions.extend([22])  # 5*4 + 2
         return actions
 
     # 駒の移動元と移動方向を行動に変換
     def position_to_action(self, position, direction):
         return position * 4 + direction
+
+    def piece_coordinate_to_actions(self, piece_coordinate, piece_coordinate_array):
+        actions = []
+        x = piece_coordinate % 6
+        y = int(piece_coordinate / 6)
+
+        if y != 5 and not np.any(piece_coordinate_array == (piece_coordinate + 6)):  # 下
+            actions.append(self.position_to_action(piece_coordinate, 0))
+        if x != 0 and not np.any(piece_coordinate_array == (piece_coordinate - 1)):  # 左
+            actions.append(self.position_to_action(piece_coordinate, 1))
+        if y != 0 and not np.any(piece_coordinate_array == (piece_coordinate - 6)):  # 上
+            actions.append(self.position_to_action(piece_coordinate, 2))
+        if x != 5 and not np.any(piece_coordinate_array == (piece_coordinate + 1)):  # 右
+            actions.append(self.position_to_action(piece_coordinate, 3))
+
+        return actions
 
     # 駒ごと(駒1つに着目した)の合法手のリストの取得
     def legal_actions_pos(self, position, piece_index_list):
