@@ -1,7 +1,5 @@
-%%cython
 import random
 import math
-from numba import jit
 import time
 
 # ゲームの状態
