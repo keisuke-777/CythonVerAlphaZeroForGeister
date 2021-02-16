@@ -5,6 +5,11 @@ model
 model/*
 __pycache__
 __pycache__/*
+test
+test/*
+buckup
+buckup/*
+*.html
 
 # ver3.6.9
 .python-version
