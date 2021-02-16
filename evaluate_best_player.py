@@ -11,13 +11,14 @@ from pathlib import Path
 import numpy as np
 
 # パラメータの準備
-EP_GAME_COUNT = 10  # 1評価あたりのゲーム数(増やす？)
+EP_GAME_COUNT = 30  # 1評価あたりのゲーム数(増やす？)
 
 # 先手プレイヤーのポイント
 def first_player_point(ended_state):
     # 1:先手勝利, 0:先手敗北, 0.5:引き分け
     if ended_state.is_lose():
         return 0 if ended_state.is_first_player() else 1
+    print("引き分け")
     return 0.5
 
 
@@ -58,6 +59,7 @@ def evaluate_algorithm_of(label, next_actions):
         print("\rEvaluate {}/{}".format(i + 1, EP_GAME_COUNT), end="")
     print("")
 
+    print("total_point", total_point)
     # 平均ポイントの計算
     average_point = total_point / EP_GAME_COUNT
     print(label, average_point)
@@ -71,6 +73,8 @@ def evaluate_best_player():
     # PV MCTSで行動選択を行う関数の生成
     next_pv_mcts_action = pv_mcts_action(model, 0.0)
 
+    print("load model")
+
     # VSランダム
     # next_actions = (next_pv_mcts_action, random_action)
     # evaluate_algorithm_of("VS_Random", next_actions)
@@ -82,13 +86,13 @@ def evaluate_best_player():
     # first_next_pv_mcts_action = pv_mcts_action(first_model, 0.0)
 
     # VSランダム
-    # next_actions = (first_next_pv_mcts_action, random_action)
-    # evaluate_algorithm_of("first_VS_Random", next_actions)
+    next_actions = (next_pv_mcts_action, random_action)
+    evaluate_algorithm_of("first_VS_Random", next_actions)
 
     # VSランダム(ポリシーとバリューを撒き散らす)
-    next_GetPVAndRandomAction = GetPVAndRandomAction(model)
-    next_actions = (next_pv_mcts_action, next_GetPVAndRandomAction)
-    evaluate_algorithm_of("first_VS_Random(print)", next_actions)
+    # next_GetPVAndRandomAction = GetPVAndRandomAction(model)
+    # next_actions = (next_pv_mcts_action, next_GetPVAndRandomAction)
+    # evaluate_algorithm_of("first_VS_Random(print)", next_actions)
 
     # 人類との戦い human_player_action
     # next_actions = (human_player_action, next_pv_mcts_action)
@@ -105,7 +109,7 @@ def evaluate_best_player():
     # モデルの破棄
     K.clear_session()
     del model
-    del first_model
+    # del first_model
 
 
 # 動作確認

@@ -292,12 +292,13 @@ if __name__ == "__main__":
             # just_before_action_num = guess_player_action
             # print("自作AIの行動番号", just_before_action_num)
             # state = state.next(just_before_action_num)
-            just_before_action_num = random_action(state)
-            print("敵の行動番号", just_before_action_num)
-            state = state.next(just_before_action_num)
+
+            # just_before_action_num = random_action(state)
+            # print("敵(ランダムAI)の行動番号", just_before_action_num)
+            # state = state.next(just_before_action_num)
         else:
             just_before_action_num = random_action(state)
-            print("自分の行動番号", just_before_action_num)
+            print("ランダムAIの行動番号", just_before_action_num)
             state = state.next(just_before_action_num)
 
         # 文字列表示

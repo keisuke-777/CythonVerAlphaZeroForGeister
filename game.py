@@ -1,11 +1,6 @@
-# ====================
-# ガイスター
-# 青駒→1
-# 赤駒→2
-# ====================
-
 import random
 import math
+import time
 
 # ゲームの状態
 class State:
@@ -226,20 +221,20 @@ def random_action(state):
     return legal_actions[random.randint(0, len(legal_actions) - 1)]
 
 
-from pv_mcts import predict
+# from pv_mcts import predict
 
-# ポリシーとバリューを撒き散らしながらランダム行動(テスト用関数)
-def GetPVAndRandomAction(model):
-    def print_PandV(state):
-        print(state)
-        legal_actions = state.legal_actions()
-        print(legal_actions)
-        policies, value = predict(model, state)
-        print(policies)
-        print(value)
-        return legal_actions[random.randint(0, len(legal_actions) - 1)]
+# # ポリシーとバリューを撒き散らしながらランダム行動(テスト用関数)
+# def GetPVAndRandomAction(model):
+#     def print_PandV(state):
+#         print(state)
+#         legal_actions = state.legal_actions()
+#         print(legal_actions)
+#         policies, value = predict(model, state)
+#         print(policies)
+#         print(value)
+#         return legal_actions[random.randint(0, len(legal_actions) - 1)]
 
-    return print_PandV
+#     return print_PandV
 
 
 # 人間に行動を選択させる
@@ -354,31 +349,57 @@ def mcts_action(state):
     return legal_actions[argmax(n_list)]
 
 
+# 最大値のインデックスを返す
+def argmax(collection, key=None):
+    return collection.index(max(collection))
+
+
+# ゲームの終端までシミュレート
+def playout(state):
+    if state.is_lose():
+        return -1
+
+    if state.is_draw():
+        return 0
+
+    return -playout(state.next(random_action(state)))
+
+
 # 動作確認
 if __name__ == "__main__":
     # 状態の生成
     state = State()
 
-    # ゲーム終了までのループ
-    while True:
-        # ゲーム終了時
-        if state.is_done():
-            print(state.depth)
+    # 時間計測
+    start = time.time()
 
-            if state.is_lose():
-                if state.depth % 2 == 0:
-                    print("敗北")
-                else:
-                    print("勝利or引き分け")
-            else:
-                if state.depth % 2 == 1:
-                    print("勝利or引き分け")
-                else:
-                    print("敗北")
-            break
+    for _ in range(10):
+        # ゲーム終了までのループ
+        while True:
+            # ゲーム終了時
+            if state.is_done():
+                print(state.depth)
 
-        # 次の状態の取得
-        state = state.next(random_action(state))
+                # if state.is_lose():
+                #     if state.depth % 2 == 0:
+                #         print("敗北")
+                #     else:
+                #         print("勝利or引き分け")
+                # else:
+                #     if state.depth % 2 == 1:
+                #         print("勝利or引き分け")
+                #     else:
+                #         print("敗北")
+                break
 
-        # 文字列表示
-        print(state)
+            # 次の状態の取得
+            # state = state.next(random_action(state))
+            state = state.next(mcts_action(state))
+
+            # 文字列表示
+            # print(state)
+
+    # 時間計測
+    elapsed_time = time.time() - start
+    print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+
