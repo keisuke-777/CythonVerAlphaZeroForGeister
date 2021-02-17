@@ -5,7 +5,7 @@
     "distutils": {
         "name": "game",
         "sources": [
-            "/Users/keisuke_main/\u7814\u7a76\u5ba4/\u7814\u7a76\u5168\u822c/Geister/CythonVerAlphaZeroForGeister/game.pyx"
+            "C:\\Users\\MAS\\keisuke\\CythonVerAlphaZeroForGeister\\game.pyx"
         ]
     },
     "module_name": "game"
