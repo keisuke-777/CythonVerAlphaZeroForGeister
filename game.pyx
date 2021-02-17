@@ -2,10 +2,11 @@ import random
 import math
 import time
 
+
 # ゲームの状態
 class State:
     # 初期化
-    def __init__(self, pieces=None, enemy_pieces=None, depth=0):
+    def __init__(self, list pieces=None, list enemy_pieces=None, int depth=0):
 
         self.is_goal = False
 
@@ -93,11 +94,11 @@ class State:
     # direction->下:0,左:1,上:2,右:3
 
     # 駒の移動元と移動方向を行動に変換
-    def position_to_action(self, position, direction):
+    def position_to_action(self, int position, int direction):
         return position * 4 + direction
 
     # 行動を駒の移動元と移動方向に変換
-    def action_to_position(self, action):
+    def action_to_position(self, int action):
         return (int(action / 4), action % 4)  # position,direction
 
     # 合法手のリストの取得
@@ -116,31 +117,32 @@ class State:
         return actions
 
     # 駒ごと(駒1つに着目した)の合法手のリストの取得
-    def legal_actions_pos(self, position):
+    def legal_actions_pos(self, int position):
         actions = []
         x = position % 6
         y = int(position / 6)
         # 下左上右の順に行動できるか検証し、できるならactionに追加
         # ちなみにand演算子は左の値を評価して右の値を返すか決める(左の値がTrue系でなければ右の値は無視する)ので、はみ出し参照してIndexErrorにはならない(&だとなる)
         if y != 5 and self.pieces[position + 6] == 0:  # 下端でない and 下に自分の駒がいない
-            actions.append(self.position_to_action(position, 0))
+            actions.append(position*4)
         if x != 0 and self.pieces[position - 1] == 0:  # 左端でない and 左に自分の駒がいない
-            actions.append(self.position_to_action(position, 1))
+            actions.append(position*4 + 1)
         if y != 0 and self.pieces[position - 6] == 0:  # 上端でない and 上に自分の駒がいない
-            actions.append(self.position_to_action(position, 2))
+            actions.append(position*4 + 2)
         if x != 5 and self.pieces[position + 1] == 0:  # 右端でない and 右に自分の駒がいない
-            actions.append(self.position_to_action(position, 3))
+            actions.append(position*4 + 3)
         # 青駒のゴール行動の可否は1ターンに1度だけ判定すれば良いので、例外的にlegal_actionsで処理する(ここでは処理しない)
         return actions
 
     # 次の状態の取得
-    def next(self, action):
+    def next(self, int action):
         # 次の状態の作成
         state = State(self.pieces.copy(), self.enemy_pieces.copy(), self.depth + 1)
 
         # position_bef->移動前の駒の位置、position_aft->移動後の駒の位置
         # 行動を(移動元, 移動方向)に変換
-        position_bef, direction = self.action_to_position(action)
+        position_bef = int(action / 4)
+        direction = action % 4
 
         # 合法手がくると仮定
         # 駒の移動(後ろに動くことは少ないかな？ + if文そんなに踏ませたくないな と思ったので判定を左右下上の順番にしてるけど意味あるのかは不明)
@@ -219,22 +221,6 @@ class State:
 def random_action(state):
     legal_actions = state.legal_actions()
     return legal_actions[random.randint(0, len(legal_actions) - 1)]
-
-
-# from pv_mcts import predict
-
-# # ポリシーとバリューを撒き散らしながらランダム行動(テスト用関数)
-# def GetPVAndRandomAction(model):
-#     def print_PandV(state):
-#         print(state)
-#         legal_actions = state.legal_actions()
-#         print(legal_actions)
-#         policies, value = predict(model, state)
-#         print(policies)
-#         print(value)
-#         return legal_actions[random.randint(0, len(legal_actions) - 1)]
-
-#     return print_PandV
 
 
 # 人間に行動を選択させる
@@ -350,7 +336,7 @@ def mcts_action(state):
 
 
 # 最大値のインデックスを返す
-def argmax(collection, key=None):
+def argmax(list collection):
     return collection.index(max(collection))
 
 
