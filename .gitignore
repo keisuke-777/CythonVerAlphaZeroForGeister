@@ -10,6 +10,8 @@ test/*
 buckup
 buckup/*
 *.html
+*.c
+*.so
 
 # ver3.6.9
 .python-version
