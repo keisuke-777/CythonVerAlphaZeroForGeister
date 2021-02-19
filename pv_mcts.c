@@ -5,7 +5,7 @@
     "distutils": {
         "name": "pv_mcts",
         "sources": [
-            "/Users/keisuke_main/\u7814\u7a76\u5ba4/\u7814\u7a76\u5168\u822c/Geister/CythonVerAlphaZeroForGeister/pv_mcts.pyx"
+            "pv_mcts.pyx"
         ]
     },
     "module_name": "pv_mcts"
