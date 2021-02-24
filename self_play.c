@@ -2733,7 +2733,7 @@ static PyObject *__pyx_pf_9self_play_6self_play(CYTHON_UNUSED PyObject *__pyx_se
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   //  無理矢理並列化したところ
-  #pragma omp parallel for
+  #pragma omp parallel for num_threads(24)
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
