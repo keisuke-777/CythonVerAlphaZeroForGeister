@@ -11,6 +11,7 @@ buckup
 buckup/*
 *.html
 *.so
+data
 
 # ver3.6.9
 .python-version
