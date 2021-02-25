@@ -101,7 +101,7 @@ def multi_play(process_id):
 # セルフプレイ
 def self_play():
     # n_jobsで使用コア数を指定(-1で勝手に最大値をとる)
-    all_history = Parallel(n_jobs=12)(
+    all_history = Parallel(n_jobs=-1)(
         [delayed(multi_play)(i) for i in range(SP_GAME_COUNT)]
     )
 
