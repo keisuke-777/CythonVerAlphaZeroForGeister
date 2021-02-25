@@ -91,6 +91,10 @@ def multi_play(process_id):
     # 出力
     print("\rSelfPlay {}/{}".format(process_id + 1, SP_GAME_COUNT))
 
+    # モデルの破棄
+    K.clear_session()
+    del model
+
     return history
 
 
@@ -108,10 +112,6 @@ def self_play():
 
     # 学習データの保存
     write_data(history)
-
-    # モデルの破棄
-    K.clear_session()
-    del model
 
 
 # 動作確認
